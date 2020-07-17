@@ -7,7 +7,7 @@ import Hero from '../components/Hero';
 import Content from '../components/About/About';
 
 
-import axios from "axios";
+import Axios from "axios";
 
 
 class ContactUs extends React.Component {
@@ -41,6 +41,28 @@ class ContactUs extends React.Component {
             disabled: true,
         });
 
+        Axios.post('/contact', this.state)
+            .then(res => {
+                if (res.data.success) {
+                    this.setState({
+                        disabled: false,
+                        emailSent: true
+                    });
+                } else {
+                    this.setState({
+                        disabled: false,
+                        emailSent: false
+                    });
+                }
+            })
+            .catch(err => {
+                console.log(err);
+
+                this.setState({
+                    disabled: false,
+                    emailSent: false
+                });
+            })
 
     }
 
@@ -51,15 +73,15 @@ class ContactUs extends React.Component {
 
                 <Content>
                     <Form onSubmit={this.handleSubmit}>
-                        <Form.Group controlId="formBasicEmail">
+                        <Form.Group>
                             <Form.Label>Email address</Form.Label>
                             <Form.Control id="email" name="email" type="email" value={this.state.email} onChange={this.handleChange} placeholder="Enter email" />
                         </Form.Group>
-                        <Form.Group controlId="formBasicName">
+                        <Form.Group >
                             <Form.Label>Name</Form.Label>
                             <Form.Control id="name" name="name" type="text" value={this.state.name} onChange={this.handleChange} placeholder="Name" />
                         </Form.Group>
-                        <Form.Group controlId="formBasicMessage">
+                        <Form.Group >
                             <Form.Label>Message</Form.Label>
                             <Form.Control id="message" name="message" as="textarea" rows="3" value={this.state.message} onChange={this.handleChange} placeholder="Message" />
                         </Form.Group>
@@ -70,7 +92,7 @@ class ContactUs extends React.Component {
 						</Button>
 
                         {this.state.emailSent === true && <p className="d-inline success-msg"> Email Sent</p>}
-                        {this.state.emailSent === false && <p className="d-inline err-msg"> Email Sent</p>}
+                        {this.state.emailSent === false && <p className="d-inline err-msg"> Email Not Sent</p>}
 
                     </Form>{" "}
 
