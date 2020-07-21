@@ -10,6 +10,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.static("client/build"));
 
+
+
 app.get("/contact", (req, res, next) => {
   res.send("API Status: Running");
 });
@@ -43,3 +45,8 @@ app.get("*", (req, res) => {
 });
 
 app.listen(PORT, () => console.log("Application running on port " + PORT));
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('/client/build/'));
+
+}
