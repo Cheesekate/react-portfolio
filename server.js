@@ -1,38 +1,24 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
-// const sendGrid = require('sendGrid/mail');
-
+const PORT = process.env.PORT || 8080;
 const sgMail = require("@sendgrid/mail");
-
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded());
-
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+app.use(express.static("client/build"));
 
 app.get("/contact", (req, res, next) => {
   res.send("API Status: Running");
 });
 
 app.post("/api/email", (req, res, next) => {
-  sgMail.setApiKey(
-    "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"
-  );
+  sgMail.setApiKey(process.env.SENDGRID_APIKEY);
   const msg = {
-    to: "katewade0@gmail.com",
-    from: req.body.email,
+    to: req.body.email,
+    from: "katewade0@gmail.com",
     subject: "Website Contact",
     text: req.body.message,
   };
@@ -52,4 +38,8 @@ app.post("/api/email", (req, res, next) => {
     });
 });
 
-app.listen(3000, "0.0.0.0");
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/client/build/index.html"));
+});
+
+app.listen(PORT, () => console.log("Application running on port " + PORT));

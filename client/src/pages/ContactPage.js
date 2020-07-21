@@ -41,7 +41,7 @@ class ContactUs extends React.Component {
             disabled: true,
         });
 
-        Axios.post('/contact', this.state)
+        Axios.post('/api/email', this.state)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
